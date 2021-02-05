@@ -1,0 +1,7 @@
+.vscode
+api-env
+
+__pychache__
+.env
+migrations
+
