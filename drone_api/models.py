@@ -79,7 +79,7 @@ class Drone(db.Model):
 
 class DroneSchema(ma.Schema):
     class Meta:
-        fields = ['field','names','price','model']
+        fields = ['field','names','price','model', 'id']
 
 drone_schema = DroneSchema()
 drones_schema = DroneSchema(many = True)  #droneSchema gives you the ability to respond in JSON

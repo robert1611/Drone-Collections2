@@ -1,5 +1,5 @@
 from drone_api import app, db, oauth
-from flask import render_template, request, redirect, url_for, flash,session, jsonify
+from flask import render_template, request, redirect, url_for, flash,session, jsonify, abort
 
 # drone_api module imports
 from drone_api.forms import UserLoginForm
@@ -78,7 +78,7 @@ def profile():
     jwt = get_jwt(current_user)
     return render_template('profile.html', jwt = jwt)
 
-# very_token = token_verify(token)
+# verify_token = token_verify(token)
 
 
 #CREATE DRONE ENDPOINT
@@ -103,13 +103,9 @@ def create_drone(current_user_token):
 @app.route('/drones', methods = ['GET'])
 @token_required
 def get_drones(current_user_token):
-    try:
-        owner, current_user_token = verify_owner(current_user_token)
-    except:
-        bad_res = verify_owner(current_user_token)
-        return bad_res
-    owner, current_user_token = verify_owner(current_user_token)
-    drones = Drone.query.filter_by(user_id = owner.user_id).all()
+    current_user_token = request.headers['X-Access-Token']
+    owner_id = verify_owner(current_user_token)
+    drones = Drone.query.filter_by(user_id = owner_id).all()
     response = drones_schema.dump(drones)
     return jsonify(response)
 
@@ -151,13 +147,20 @@ def update_drone(current_user_token, id):
 @app.route('/drones/<id>', methods = ['DELETE'])
 @token_required
 def delete_drone(current_user_token,id):
-    try:
-        owner, current_user_token = verify_owner(current_user_token)
-    except:
-        bad_res = verify_owner(current_user_token)
-        return bad_res
-    owner, current_user_token - verify_owner(current_user_token)
-    drone - Drone.query.get(id) #Get drone instance
+    #try:
+    #    owner, current_user_token = verify_owner(current_user_token)
+    #except:
+    #    bad_res = verify_owner(current_user_token)
+    #    return bad_res
+
+    #owner, current_user_token - verify_owner(current_user_token)
+    drone = Drone.query.get(id) #Get drone instance
+    if not drone:
+        return abort(404)
+    
+    if drone.user_id != current_user_token.token:
+        return abort(403)
+
     db.session.delete(drone)
     db.session.commit()
     response = drone_schema.dump(drone)

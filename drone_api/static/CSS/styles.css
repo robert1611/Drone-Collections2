@@ -92,7 +92,7 @@ ul#horizontal-list a:nth-last-child(1){
 /* Profile Styles  Linear Gradient starts at top left and moves right */
 .hero-section{
     height: 95vh;
-    background-image:linear-gradient(to right bottom, rgba(30,115,172,0.7),rgba(142, 57, 153,0.6)), url(../images/drone-profile.jpg);
+    background-image:linear-gradient(to right bottom, rgba(30,115,172,0.6),rgba(142, 57, 153,0.7)), url(../images/drone-profile.jpg);
     background-size: cover;
     background-position: 35% 50%;
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 80vh, 0 100%);
